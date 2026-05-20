@@ -11,6 +11,6 @@ Identifiants à distribuer :
   Participant 7   aks-participant7@demoazure500.onmicrosoft.com rg-aks-formation-7
   Participant 8   aks-participant8@demoazure500.onmicrosoft.com rg-aks-formation-8
 
-  Mot de passe    : AksFormation2026!
+  
   Portail         : https://portal.azure.com
   Cloud Shell     : https://shell.azure.com
