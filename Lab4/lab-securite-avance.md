@@ -244,23 +244,9 @@ az role assignment create \
 
 > Le rôle `Key Vault Secrets User` permet uniquement de **lire** les secrets. L'identité ne peut ni les modifier, ni les supprimer, ni accéder aux clés ou certificats. C'est le principe de moindre privilège.
 
-### 2.3 Créer la federated credential
 
-```bash
-AKS_OIDC_ISSUER=$(az aks show -g $RG -n $CLUSTER_NAME --query oidcIssuerProfile.issuerUrl -o tsv)
 
-az identity federated-credential create \
-  --name "fc-kv-lab" \
-  --identity-name $IDENTITY_NAME \
-  --resource-group $RG \
-  --issuer $AKS_OIDC_ISSUER \
-  --subject "system:serviceaccount:${NAMESPACE_KV}:sa-kv-reader" \
-  --audiences "api://AzureADTokenExchange"
-```
-
-> La federated credential lie l'identité Azure au ServiceAccount Kubernetes `sa-kv-reader` dans le namespace `lab-sec-kv`. Seul ce SA peut utiliser cette identité.
-
-### 2.4 Créer le ServiceAccount annoté
+### 2.3 Créer le ServiceAccount annoté
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -275,6 +261,21 @@ EOF
 ```
 
 ---
+### 2.4 Créer la federated credential
+
+```bash
+AKS_OIDC_ISSUER=$(az aks show -g $RG -n $CLUSTER_NAME --query oidcIssuerProfile.issuerUrl -o tsv)
+
+az identity federated-credential create \
+  --name "fc-kv-lab" \
+  --identity-name $IDENTITY_NAME \
+  --resource-group $RG \
+  --issuer $AKS_OIDC_ISSUER \
+  --subject "system:serviceaccount:${NAMESPACE_KV}:sa-kv-reader" \
+  --audiences "api://AzureADTokenExchange"
+```
+
+> La federated credential lie l'identité Azure au ServiceAccount Kubernetes `sa-kv-reader` dans le namespace `lab-sec-kv`. Seul ce SA peut utiliser cette identité.
 
 ## Étape 3 — Créer la SecretProviderClass
 
